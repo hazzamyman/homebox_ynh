@@ -1,19 +1,14 @@
 #!/bin/bash
+#### App file generated with YoloGen, the YunoHost app generator, version .
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
+# This is the tutorial version of the app.
+# It contains extra commands to explain what should be done in case you want to adjust some part of the script.
+# Once you are done, you may remove them.
 
-# Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# DECLARE DATA AND CONF FILES TO BACKUP
-#=================================================
-ynh_print_info --message="Declaring files to be backed up..."
+ynh_print_info "Declaring files to be backed up..."
 
 ### N.B. : the following 'ynh_backup' calls are only a *declaration* of what needs
 ### to be backuped and not an actual copy of any file. The actual backup that
@@ -24,68 +19,35 @@ ynh_print_info --message="Declaring files to be backed up..."
 # BACKUP THE APP MAIN DIR
 #=================================================
 
-ynh_backup --src_path="$install_dir"
+ynh_backup "$install_dir"
 
 #=================================================
-# BACKUP THE DATA DIR
+# SYSTEM CONFIGURATION
 #=================================================
 
-# Only relevant if there is a "data_dir" resource for this app
-ynh_backup --src_path="$data_dir" --is_big
+ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 
-#=================================================
-# BACKUP THE NGINX CONFIGURATION
-#=================================================
-
-ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
-
-#=================================================
-# BACKUP THE PHP-FPM CONFIGURATION
-#=================================================
-
-ynh_backup --src_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
-
-#=================================================
-# BACKUP FAIL2BAN CONFIGURATION
-#=================================================
-
-ynh_backup --src_path="/etc/fail2ban/jail.d/$app.conf"
-ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
-
-#=================================================
-# SPECIFIC BACKUP
-#=================================================
-# BACKUP LOGROTATE
-#=================================================
-
-ynh_backup --src_path="/etc/logrotate.d/$app"
-
-#=================================================
-# BACKUP SYSTEMD
-#=================================================
-
-ynh_backup --src_path="/etc/systemd/system/$app.service"
+ynh_backup "/etc/systemd/system/$app.service"
 
 #=================================================
 # BACKUP VARIOUS FILES
 #=================================================
 
-ynh_backup --src_path="/etc/cron.d/$app"
+### For apps with huge logs, you might want to pass --is_big,
+### and in restore script, mkdir and pass --not_mandatory to ynh_restore_file.
 
-ynh_backup --src_path="/etc/$app/"
+ynh_backup "/var/log/$app/" # TODO: add an option to specify log file
 
 #=================================================
-# BACKUP THE MYSQL DATABASE
+# BACKUP THE DATABASE
 #=================================================
-ynh_print_info --message="Backing up the MySQL database..."
+ynh_print_info "Backing up the mysql database..."
 
 ### (However, things like MySQL dumps *do* take some time to run, though the
 ### copy of the generated dump to the archive still happens later)
-
-ynh_mysql_dump_db --database="$db_name" > db.sql
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
+ynh_print_info "Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
