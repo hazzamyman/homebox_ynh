@@ -5,10 +5,10 @@ packaging_format = 2
 id = "homebox"
 name = "Homebox"
 
-description.en = "A continuation of HomeBox the inventory and organization system built for the Home User"
-description.fr = "Une continuation de HomeBox, le système d&#39;inventaire et d&#39;organisation conçu pour l&#39;utilisateur domestique"
+description.en = "An inventory application for your stuff"
+description.fr = "Une application d&#39;inventaire pour vos affairesUne application d&#39;inventaire pour vos affaires"
 
-version = "16.0~ynh~ynh1"
+version = "0.16.0~ynh1"
 
 maintainers = ["hazzamyman"]
 
@@ -69,4 +69,3 @@ ram.runtime = "50M"
 
     [resources.ports]
     # This will pick a random port for reverse-proxying and store it as the $port setting
-    
